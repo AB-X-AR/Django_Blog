@@ -2,8 +2,8 @@
 
 ## 1. Project overview
 
-We'll build a Django Blog Application with the following features:
-![[Pasted image 20261121191933.png]]
+
+<img width="744" height="816" alt="image" src="https://github.com/user-attachments/assets/d7a89ed5-6200-4856-a681-550f4f95b038" />
 
 
 ## 2. Technologies we'll use
