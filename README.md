@@ -25,32 +25,40 @@ Our project will eventually look something like this:
 text
 
 ```
-blog_project/
+AZBlog/
 │
+├── venv/
 ├── manage.py
 │
-├── blog_project/
+├── config/
+│   ├── __init__.py
 │   ├── settings.py
 │   ├── urls.py
+│   ├── asgi.py
 │   └── wsgi.py
 │
-├── blog/
+├── azblog/
 │   ├── migrations/
-│   ├── models.py
-│   ├── views.py
-│   ├── urls.py
+│   ├── __init__.py
 │   ├── admin.py
-│   └── templates/
-│       └── blog/
-│           ├── home.html
-│           ├── post_detail.html
-│           └── create_post.html
+│   ├── apps.py
+│   ├── models.py
+│   ├── tests.py
+│   └── views.py
 │
-├── accounts/
-│   ├── views.py
-│   └── urls.py
+├── templates/
+│   ├── base.html
+│   └── azblog/
+│       └── home.html
 │
 ├── static/
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   └── images/
+│
 ├── media/
+│
 └── requirements.txt
+
 ```
