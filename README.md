@@ -2,8 +2,8 @@
 
 ## 1. Project overview
 
-We'll build a Django Blog Application with the following features:
-![[Pasted image 20261121191933.png]]
+
+<img width="744" height="816" alt="image" src="https://github.com/user-attachments/assets/d7a89ed5-6200-4856-a681-550f4f95b038" />
 
 
 ## 2. Technologies we'll use
@@ -25,32 +25,40 @@ Our project will eventually look something like this:
 text
 
 ```
-blog_project/
+AZBlog/
 │
+├── venv/
 ├── manage.py
 │
-├── blog_project/
+├── config/
+│   ├── __init__.py
 │   ├── settings.py
 │   ├── urls.py
+│   ├── asgi.py
 │   └── wsgi.py
 │
-├── blog/
+├── azblog/
 │   ├── migrations/
-│   ├── models.py
-│   ├── views.py
-│   ├── urls.py
+│   ├── __init__.py
 │   ├── admin.py
-│   └── templates/
-│       └── blog/
-│           ├── home.html
-│           ├── post_detail.html
-│           └── create_post.html
+│   ├── apps.py
+│   ├── models.py
+│   ├── tests.py
+│   └── views.py
 │
-├── accounts/
-│   ├── views.py
-│   └── urls.py
+├── templates/
+│   ├── base.html
+│   └── azblog/
+│       └── home.html
 │
 ├── static/
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   └── images/
+│
 ├── media/
+│
 └── requirements.txt
+
 ```
