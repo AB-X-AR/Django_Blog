@@ -1,0 +1,16 @@
+{% extends 'azblog/base.html' %}
+
+{% block title %}{{ post.title }} - AZ Blog{% endblock %}
+<h1>Create a Blog Post</h1>
+{% block content %}
+
+<div class="container mt-4">
+    <h2>Create New Blog Post</h2>
+    <form acion="{% url 'post_create' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Publish Post</button>
+    </form>
+</div>
+{% endblock %}
+
