@@ -19,6 +19,13 @@
     
     <a href="{% url 'post_update' post.pk %}">Edit this Post</a>
   </div>
+  
+    <form action="{% url 'post_delete' post.pk %}" method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Remove Post</button>
+    </form>
+
+  
 
 </div>
 

@@ -51,6 +51,17 @@ def post_update(request, pk):
         return render(request, "azblog/post_form.html", {'form':form, 'pk':post.pk})
         
 
+@login_required
+def post_delete(request, pk):
+    post = get_object_or_404(Post, pk=pk, author=request.user)
+
+    if request.method == 'POST':
+        post.delete()
+        return redirect('home')
+    return render(request, 'azblog/home.html', {'pk':post.pk})
+
+
+
 
 
 """
