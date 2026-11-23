@@ -38,8 +38,19 @@ def post_create(request):
 
     return render(request, 'azblog/post_form.html', {'form': form})
         
-#@login_required
-#def post_update(request)
+@login_required
+def post_update(request, pk):
+    post = get_object_or_404(Post, pk=pk, author=request.user)
+    if request.method == 'POST':
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = PostForm(instance=post)
+        return render(request, "azblog/post_form.html", {'form':form, 'pk':post.pk})
+        
+
 
 
 """
