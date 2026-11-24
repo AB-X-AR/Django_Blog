@@ -1,0 +1,95 @@
+name: Deploy to PythonAnywhere
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Install dependencies and verify Django
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python manage.py check
+
+      - name: Deploy to PythonAnywhere via API
+        env:
+          PA_API_TOKEN: ${{ secrets.PA_API_TOKEN }}
+          PA_USERNAME: abxar
+          PA_DOMAIN: ://pythonanywhere.com
+        run: |
+          python - << 'EOF'
+          import json
+          import os
+          import sys
+          import time
+          import urllib.error
+          import urllib.request
+
+          token = os.environ["PA_API_TOKEN"]
+          user = os.environ["PA_USERNAME"]
+          domain = os.environ["PA_DOMAIN"]
+          base_url = f"https://pythonanywhere.com{user}"
+          headers = {
+              "Authorization": f"Token {token}",
+              "Content-Type": "application/json",
+          }
+
+          def request(endpoint, method="GET", payload=None):
+              data = json.dumps(payload).encode("utf-8") if payload is not None else None
+              req = urllib.request.Request(
+                  f"{base_url}{endpoint}",
+                  data=data,
+                  headers=headers,
+                  method=method,
+              )
+              try:
+                  with urllib.request.urlopen(req) as resp:
+                      body = resp.read().decode("utf-8")
+                      return json.loads(body) if body else {}
+              except urllib.error.HTTPError as e:
+                  print(f"API Error {e.code} on {endpoint}: {e.read().decode('utf-8')}")
+                  sys.exit(1)
+
+          print("1. Starting PythonAnywhere Bash console...")
+          console = request("/consoles/", method="POST", payload={"executable": "bash"})
+          console_id = console["id"]
+          time.sleep(3)
+
+          try:
+              print("2. Pulling code, migrating DB, and collecting static files...")
+              deploy_cmd = (
+                  "cd ~/Django_Blog && "
+                  "git pull origin main && "
+                  "workon myenv && "
+                  "pip install -r requirements.txt && "
+                  "python manage.py migrate --noinput && "
+                  "python manage.py collectstatic --noinput\n"
+              )
+              request(
+                  f"/consoles/{console_id}/send_input/",
+                  method="POST",
+                  payload={"input": deploy_cmd},
+              )
+              time.sleep(15)
+          finally:
+              print("3. Closing temporary console...")
+              request(f"/consoles/{console_id}/", method="DELETE")
+
+          print("4. Reloading web app...")
+          request(f"/webapps/{domain}/reload/", method="POST")
+          print("Deployment finished successfully!")
+          EOF
