@@ -3,6 +3,7 @@ from django.core import files
 from django.shortcuts import get_object_or_404
 from django.views.static import template_translatable
 from django.shortcuts import render, HttpResponse, redirect
+from django.http import Http404
 from .models import Post
 from .forms import PostForm
 #from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -17,6 +18,10 @@ def home(request):
 
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
+    # Prevent IDOR: unauthenticated or unauthorized users cannot view unpublished drafts
+    if post.status != 'published':
+        if not request.user.is_authenticated or (post.author != request.user and not request.user.is_staff):
+            raise Http404("Post not found.")
     return render(request, 'azblog/post_detail.html', {'post':post})
 
 
@@ -31,7 +36,7 @@ def post_create(request):
             post.author = request.user
             post.save()
 
-            return redirect('post_detail')
+            return redirect('post_detail', pk=post.pk)
 
     else:
         form = PostForm()

@@ -6,16 +6,42 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import os
 from pathlib import Path
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env if present
+env_file = BASE_DIR / '.env'
+if env_file.exists():
+    with open(env_file) as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                key, val = line.split('=', 1)
+                os.environ.setdefault(key.strip(), val.strip())
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#80@(rxfyde7%b#%fg()&!pm1jbi0ejf)#ib@3x@18gyd3-geh'
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-#80@(rxfyde7%b#%fg()&!pm1jbi0ejf)#ib@3x@18gyd3-geh'
+)
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = ['://pythonanywhere.com', 'abxar.pythonanywhere.com']
+DEBUG = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 't')
+
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get(
+        'ALLOWED_HOSTS',
+        'localhost,127.0.0.1,abxar.pythonanywhere.com'
+    ).split(',')
+    if host.strip()
+]
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -34,7 +60,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'djblog.middleware.LoginRateLimitMiddleware',
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'djblog-cache',
+    }
+}
 
 ROOT_URLCONF = 'djblog.urls'
 
