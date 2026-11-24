@@ -28,9 +28,10 @@ jobs:
       - name: Deploy to PythonAnywhere via API
         env:
           PA_API_TOKEN: ${{ secrets.PA_API_TOKEN }}
-          PA_HOST: ://pythonanywhere.com
+          PA_HOST: www.pythonanywhere.com
           PA_USERNAME: abxar
-          PA_DOMAIN: ://pythonanywhere.com
+          PA_DOMAIN: abxar.pythonanywhere.com
+
         run: |
           python - << 'EOF'
           import json
