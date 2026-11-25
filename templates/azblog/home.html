@@ -3,36 +3,81 @@
 {% block title %}Home - AZ Blog{% endblock %}
 
 {% block content %}
-<h1>Posts</h1>
+<!-- Trendy Editorial Hero Header -->
+<div class="hero-banner my-4 my-md-5 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+  <div>
+    <span class="badge rounded-pill px-3 py-2 mb-2 fw-semibold" style="background-color: #eef2ff; color: #4f46e5;">
+      Latest Stories
+    </span>
+    <h1 class="display-5 fw-bold text-dark mb-1" style="letter-spacing: -0.02em;">Explore the Blog</h1>
+    <p class="text-muted mb-0">Thoughts, travelogues, and stories from our authors.</p>
+  </div>
+  {% if request.user.is_authenticated %}
+    <a href="{% url 'post_create' %}" class="btn btn-trendy align-self-start align-self-md-center">
+      + Write a Story
+    </a>
+  {% endif %}
+</div>
 
-<div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-    {% for post in posts %}
-      <div class="col">
+<!-- Posts Grid -->
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+  {% for post in posts %}
+    <div class="col">
+      <article class="trendy-card post-card h-100 d-flex flex-column">
         
-        <div class="card h-100 shadow-sm border-0">
-          
-          <!-- Optional Post Image -->
-          {% if post.image %}
-            <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
-          {% endif %}
+        <!-- Post Cover Image OR Geometric Art Fallback -->
+        {% if post.image %}
+          <img src="{{ post.image.url }}" class="w-100" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
+        {% else %}
+          <div class="post-cover-placeholder">
+            <span class="badge rounded-pill bg-white text-dark shadow-sm px-3 py-2 fw-semibold">
+              Story #{{ forloop.counter }}
+            </span>
+          </div>
+        {% endif %}
 
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title fw-bold">{{ post.title }}</h5>
-            <h6 class="card-subtitle mb-2 text-muted small">
-              By {{ post.author }} • {{ post.created_at|date:"M d, Y" }}
-            </h6>
-            <p class="card-text text-secondary flex-grow-1">
-              {{ post.excerpt }}
-            </p>
-            <a href="{% url 'post_detail' post.pk %}" class="btn btn-primary btn-sm mt-2 align-self-start">Read More</a>
+        <!-- Card Content -->
+        <div class="p-4 d-flex flex-column flex-grow-1">
+          <div class="text-muted small mb-2">
+            Author :: {{ post.author }}
+            <br>
+            {{ post.created_at|date:"M d, Y" }}           
+          </div>
+
+          <h5 class="fw-bold text-dark mb-2">
+            <a href="{% url 'post_detail' post.pk %}" class="text-decoration-none text-dark stretched-link">
+              {{ post.title }}
+            </a>
+          </h5>
+
+          <p class="text-secondary small flex-grow-1 mb-4" style="line-height: 1.6;">
+            {{ post.excerpt|truncatewords:22 }}
+          </p>
+
+          <!-- Card Footer: Author Avatar + Pill CTA -->
+          <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <div class="author-avatar-sm">
+                {{ post.author.username|slice:":1" }}
+              </div>
+              <span class="small fw-semibold text-dark">{{ post.author }}</span>
+            </div>
+
+            <span class="small fw-bold" style="color: #4f46e5;">
+              Read &rarr;
+            </span>
           </div>
         </div>
-      </div>
-    {% empty %}
-      <div class="col-12">
-        <div class="alert alert-info">No blog posts available yet.</div>
-      </div>
-    {% endfor %}
-  </div>
 
+      </article>
+    </div>
+  {% empty %}
+    <div class="col-12">
+      <div class="trendy-card p-5 text-center my-3">
+        <h4 class="fw-bold text-dark mb-2">No stories published yet</h4>
+        <p class="text-muted mb-0">Check back soon for new articles and updates.</p>
+      </div>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}

@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Author Login - AZ Blog</title>
+  <!-- Bootstrap 5 CSS -->
+  
+  <!-- Your Trendy Geometric CSS -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body class="d-flex align-items-center min-vh-100">
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="trendy-card p-4 p-md-5">
+          
+          <!-- Geometric Brand Badge -->
+          <div class="text-center mb-4">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-4 mb-3" 
+                 style="width: 56px; height: 56px; background: #eef2ff; color: #4f46e5;">
+              <svg xmlns="http://w3.org" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+              </svg>
+            </div>
+            <h3 class="fw-bold mb-1">Welcome Back</h3>
+            <p class="text-muted small mb-0">Sign in to write &amp; manage your stories</p>
+          </div>
+
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-danger border-0 rounded-3 py-2 small text-center" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="username" class="form-label fw-semibold small text-uppercase text-muted">Username</label>
+              <input type="text" name="username" id="username" class="form-control trendy-input" required autofocus>
+            </div>
+
+            <div class="mb-4">
+              <label for="password" class="form-label fw-semibold small text-uppercase text-muted">Password</label>
+              <input type="password" name="password" id="password" class="form-control trendy-input" placeholder="••••••••" required>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-trendy">Sign In &rarr;</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

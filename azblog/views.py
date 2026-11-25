@@ -1,15 +1,32 @@
 from django.contrib.auth.decorators import login_required
-from django.core import files
-from django.shortcuts import get_object_or_404
-from django.views.static import template_translatable
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import Http404
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from .models import Post
 from .forms import PostForm
+from django.core.exceptions import PermissionDenied
 #from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 # Create your views here.
 
 
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid username or password')
+    return render(request, 'azblog/login.html') 
+
+def user_logout(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('login')
+    return redirect('home')
 
 def home(request):
     posts = Post.objects.filter(status='published')
@@ -55,15 +72,20 @@ def post_update(request, pk):
         form = PostForm(instance=post)
         return render(request, "azblog/post_form.html", {'form':form, 'pk':post.pk})
         
-
 @login_required
 def post_delete(request, pk):
     post = get_object_or_404(Post, pk=pk, author=request.user)
-
+    if post.author != request.user:
+        raise PermissionDenied
     if request.method == 'POST':
-        post.delete()
-        return redirect('home')
-    return render(request, 'azblog/home.html', {'pk':post.pk})
+        password = request.POST.get('password')
+        if request.user.check_password(password):
+            post.delete()
+            messages.success(request, 'Post Deleted Successfully')
+            return redirect('home')
+        else:
+            messages.error(request, 'Incorrect password. Post was not deleted')
+    return render(request, 'azblog/post_confirm_delete.html', {'post':post})
 
 
 

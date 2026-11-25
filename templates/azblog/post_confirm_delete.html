@@ -1,3 +1,24 @@
 {% extends 'azblog/base.html' %}
 
 {% block title %}{{ post.title }} - AZ Blog{% endblock %}
+{% block content %}
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-danger mx-auto" style="max-width: 450px;">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+<div class="card shadow-sm border-0 p-4 mx-auto my-5" style="max-width: 450px;">
+  <h4 class="fw-bold mb-3">Delete Post</h4>
+  <form method="POST" action="{% url 'post_delete' post.pk %}">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="password" class="form-label fw-semibold">Enter your password to confirm deletion:</label>
+      <input type="password" name="password" id="password" class="form-control" placeholder="Your account password" required>
+    </div>
+    <button type="submit" class="btn btn-danger">Confirm Delete</button>
+    <a href="{% url 'post_detail' post.pk %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+  </form>
+</div>
+{% endblock %}

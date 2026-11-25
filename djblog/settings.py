@@ -32,7 +32,9 @@ SECRET_KEY = os.environ.get(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 't')
+#DEBUG = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 't')
+DEBUG = True
+
 
 ALLOWED_HOSTS = [
     host.strip()
@@ -42,6 +44,7 @@ ALLOWED_HOSTS = [
     ).split(',')
     if host.strip()
 ]
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -136,7 +139,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+# LOGIN LOGIC
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'
+
 STATIC_URL = 'static/'
+
+
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
